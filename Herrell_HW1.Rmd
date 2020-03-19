@@ -1,0 +1,27 @@
+---
+title: "Holden Herrell IST 687 HW1"
+output: pdf_document
+---
+
+```{r}
+height<-c(59,60,61,58,67,72,70)
+weight<-c(150,140,180,220,160,140,130)
+a<-150
+mean(height)
+mean(weight)
+length(height)
+length(weight)
+sum(height)
+sum(height)/length(height)
+sum(weight)/length(weight)
+#Both the mean function and this method return the same values
+maxH<-max(height)
+maxH
+minW<-min(weight)
+minW
+NewWeight<-c(weight+5)
+NewWeight
+NewWeight/height
+if(max(height)>60) "yes" else "no"
+if(min(weight)>a) "yes" else "no"
+```

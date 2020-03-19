@@ -1,0 +1,107 @@
+---
+title: "Holden Herrell IST687 HW3"
+geometry: "margin=.25cm"
+output: pdf_document
+fontsize: 10pt
+---
+
+
+```{r}
+#Step 1
+readStates <- function() {
+
+  CensusURL<- "http://www2.census.gov/programs-surveys/popest/tables/2010-2011/state/totals/nst-est2011-01.csv"
+  
+  dfStates<- read.csv(url(CensusURL))
+  
+  return(dfStates)
+}
+
+dfStates<-readStates()
+dfStates
+
+#Step 2
+readStates <- function() {
+  
+  CensusURL<- "http://www2.census.gov/programs-surveys/popest/tables/2010-2011/state/totals/nst-est2011-01.csv"
+  
+  dfStates<- read.csv(url(CensusURL))
+  
+  #take out extra columns
+  dfStates<-dfStates[,1:5]
+  
+  #take out extra rows at top
+  dfStates<- dfStates[-1:-8,]
+  
+  #give column names
+  colnames(dfStates) <- c("stateName", "base2010", "base2011", "Jul2010", "Jul2011")
+  
+  #take out extra rows at bottom
+  dfStates<- dfStates[1:51,]
+  
+  #make numbers numbers
+  dfStates$base2010<- as.numeric(gsub(",","", dfStates$base2010))
+  dfStates$base2011<- as.numeric(gsub(",","",dfStates$base2011))
+  dfStates$Jul2010<- as.numeric(gsub(",","",dfStates$Jul2010))
+  dfStates$Jul2011<- as.numeric(gsub(",","",dfStates$Jul2011))
+  
+  return(dfStates)
+}
+
+dfStates<-readStates()
+dfStates
+
+#Step 3
+mean(dfStates$Jul2011)
+
+#Step 4
+highestPopState<-dfStates[which(dfStates$Jul2011 == (max(dfStates$Jul2011))),names(dfStates) %in% c("stateName")]
+highestPopState
+#Answer is California
+
+dfStatesSorted<- dfStates[order(dfStates$Jul2011),]
+dfStatesSorted
+
+#Step 5
+MyFunction<- function() {
+  MyVector<- c(1,2,3,4,5)
+  
+  MyNumber<- c(1)
+  
+  CumulativeDistMyVector<- ecdf(MyVector)
+  MyValue <- CumulativeDistMyVector(MyNumber)
+  return(MyValue)
+}
+
+MyValue<-MyFunction()
+MyValue
+
+MyFunction<- function() {
+  MyVector<- c(dfStates$Jul2011)
+  
+  MyNumber<- c(mean(dfStates$Jul2011))
+  
+  CumulativeDistMyVector<- ecdf(MyVector)
+  MyValue <- CumulativeDistMyVector(MyNumber)
+  return(MyValue)
+}
+
+MyValue<-MyFunction()
+MyValue
+
+My2ndFunction<- function() {
+  My2ndVector<- c(dfStates$Jul2011)
+  
+  My2ndNumber<- c(mean(dfStates$Jul2011))
+  
+  My2ndValue<- count(My2ndVector< My2ndNumber)/count(My2ndVector)
+
+  return(My2ndValue)
+}
+
+My2ndValue<-MyFunction()
+My2ndValue
+
+#I think either of my two functions work just as well as the other, but the second one may be better
+#because the logic is easier to explain to someone not as familiar with R.
+```

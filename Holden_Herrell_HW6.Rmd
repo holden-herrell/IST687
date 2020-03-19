@@ -1,0 +1,128 @@
+---
+title: "Holden Herrell IST687 HW6"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+geometry: margin=2cm
+classoption: landscape
+---
+
+
+```{r, include=FALSE}
+install.packages("ggplot2", repos = "http://cran.us.r-project.org")
+library(ggplot2)
+install.packages("tidyr", repos = "http://cran.us.r-project.org")
+library(tidyr)
+```
+```{r}
+#Step 1
+AirQuality<-airquality
+
+#Step 2
+df<-na.omit(AirQuality)
+
+#Step 3 (Part 1)
+OzoneHist <- ggplot(df,aes(x=Ozone))
+OzoneHist <- OzoneHist + geom_histogram(binwidth=10,color="white",fill="black")+ggtitle("Ozone Histogram")
+OzoneHist
+```
+\newpage
+```{r}
+SolarHist<- ggplot(df,aes(x=Solar.R))
+SolarHist <- SolarHist + geom_histogram(binwidth=10,color="white",fill="black")+ggtitle("Solar Histogram")
+SolarHist
+```
+\newpage
+```{r}
+WindHist <- ggplot(df,aes(x=Wind))
+WindHist <- WindHist + geom_histogram(binwidth=10,color="white",fill="black")+ggtitle("Wind Histogram")
+WindHist
+```
+\newpage
+```{r}
+TempHist <- ggplot(df,aes(x=Temp))
+TempHist <- TempHist + geom_histogram(binwidth=10,color="white",fill="black")+ggtitle("Temp Histogram")
+TempHist
+```
+\newpage
+```{r}
+OzoneBox <- ggplot(df, aes(x=Ozone, y=Day, group=1))
+OzoneBox <- OzoneBox + geom_boxplot()+ggtitle("Ozone Box Plot")
+OzoneBox
+```
+\newpage
+```{r}
+WIND <- factor(df$Wind)
+WindBox <- ggplot(df, aes(x=WIND, y=Day), group=1)
+WindBox <- WindBox  + geom_boxplot()+ggtitle("Wind Box Plot")
+WindBox
+```
+\newpage
+```{r}
+#Step 3 (Part 2)
+date<-as.Date(with(df, paste(1973, df$Month, df$Day, sep="-")), "%Y-%m-%d")
+
+OzoneLine <- ggplot(df, aes(x=date, y=Ozone, group=1))
+OzoneLine <- OzoneLine + geom_line(color="green")+geom_point(color="green", size=1)
+OzoneLine <- OzoneLine + theme(axis.text.x=element_text(angle=90, hjust=1))+ggtitle("Ozone Line Chart")+ylab("Ozone (ppb)")
+OzoneLine
+```
+\newpage
+```{r}
+SolarLine <- ggplot(df, aes(x=date, y=Solar.R, group=1))
+SolarLine <- SolarLine + geom_line(color="orange")+geom_point(color="orange", size=1)
+SolarLine <- SolarLine + theme(axis.text.x=element_text(angle=90, hjust=1))+ggtitle("Solar R Line Chart")+ylab("Solar R (lang)")
+SolarLine
+```
+\newpage
+```{r}
+TempLine <- ggplot(df, aes(x=date, y=Temp, group=1))
+TempLine <- TempLine + geom_line(color="red")+geom_point(color="red", size=1)
+TempLine <- TempLine + theme(axis.text.x=element_text(angle=90, hjust=1))+ggtitle("Temp Line Chart")+ylab("Temp(degrees F)")
+TempLine
+```
+\newpage
+```{r}
+WindLine <- ggplot(df, aes(x=date, y=Wind, group=1))
+WindLine <- WindLine + geom_line(color="blue")+geom_point(color="blue", size=1)
+WindLine <- WindLine + theme(axis.text.x=element_text(angle=90, hjust=1))+ggtitle("Wind Line Chart")+ylab("Wind (mph)")
+WindLine
+```
+\newpage
+```{r}
+ComboLine <- ggplot(df, aes(x=date, group=1))
+ComboLine <- ComboLine + geom_line(aes(y=Ozone, color="Ozone"))
+ComboLine <- ComboLine + geom_line(aes(y=Solar.R, color="Solar.R"))
+ComboLine <- ComboLine + geom_line(aes(y=Temp, color="Temp"))
+ComboLine <- ComboLine + geom_line(aes(y=Wind, color="Wind"))
+ComboLine <- ComboLine + ggtitle("Combined Line Chart")+ylab("Ozone(ppb), Solar R (lang), Wind(mph), Temp (degrees F)")
+ComboLine <- ComboLine + theme(legend.position=("right")) + scale_color_manual(values=c("green","orange","red","blue"))
+ComboLine
+```
+\newpage
+```{r, include=FALSE}
+install.packages("tidyr", repos = "http://cran.us.r-project.org")
+library(tidyr)
+```
+```{r}
+#Step 4
+HeatMap1<-data.frame(date, df$Ozone, df$Temp, df$Wind, df$Solar.R)
+colnames(HeatMap1)<- c("Date","Ozone","Temp","Wind","Solar R")
+HeatMap2<-HeatMap1
+HeatMapData <-gather(data=HeatMap2, key=Variable, value=Ammount, -Date)
+HeatMap <- ggplot(data=HeatMapData, mapping = aes(x = Date, y = Variable, fill=Ammount))+geom_tile()
+HeatMap <-HeatMap + ggtitle("Heat Map")
+HeatMap
+```
+\newpage
+```{r}
+#Step 5
+Scatter <-ggplot(df, aes(x=Wind, y=Temp))
+Scatter <- Scatter + geom_point (aes(size=Ozone, color= Solar.R))
+Scatter
+
+#Step 6
+#It appears that when there is less wind and the temperature is higher, there is increased Ozone and Solar.R.
+#The scatter plot was most useful to me because it helped me understand the relationship between all of the variables.
+```

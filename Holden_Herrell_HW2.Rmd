@@ -1,0 +1,77 @@
+---
+title: "Holden Herrell IST687 HW4"
+geometry: "margin=2cm"
+output: pdf_document
+---
+
+
+```{r}
+options(width = 100)
+#Step 1
+#1.
+printVecinfo<-function(vec){
+#2.a.
+mean<-mean(vec)
+#2.b.
+median<-median(vec)
+#2.c.
+min<-min(vec)
+max<-max(vec)
+#2.d.
+standardDeviation<-sd(vec)
+#2.e.
+quantile05<-quantile(vec,.05)
+quantile95<-quantile(vec,.95)
+#2.f.
+skewness<-skewness(vec)
+#1.cont'd
+result<-(c(mean, median, min, max, standardDeviation, quantile05, quantile95, skewness))
+names(result)<-(c("mean", "median", "min", "max", "standardDeviation", "5% quantile", "95% quantile", "skewness"))
+return(result)
+}
+#3.
+vec<-c(1,2,3,4,5,6,7,8,9,10,50)
+printVecinfo(vec) 
+
+#Step 2
+#4.
+marblecolors<-c("Red","Blue")
+jar<-rep(marblecolors,50)
+#5.
+sum(jar=="Red")
+#6.
+sampleQuestion6<-sample(jar, 10, replace=TRUE)
+sampleQuestion6
+sum(sampleQuestion6=="Red")
+percent(sum(sampleQuestion6=="Red")/10)
+#7.
+sampleQuestion7<-replicate(20, sum(sample(jar, 10, replace=TRUE)=="Red"))
+sampleQuestion7
+printVecinfo(sampleQuestion7)
+hist(sampleQuestion7)
+#8.
+sampleQuestion8<-replicate(20, sum(sample(jar, 100, replace=TRUE)=="Red"))
+sampleQuestion8
+printVecinfo(sampleQuestion8)
+hist(sampleQuestion8)
+#9.
+sampleQuestion9<-replicate(100, sum(sample(jar, 100, replace=TRUE)=="Red"))
+sampleQuestion9
+printVecinfo(sampleQuestion9)
+hist(sampleQuestion9)
+
+#Step 3
+#10.
+tempAir<-airquality
+tempAir
+#11.
+CleanTempAir<-na.omit(tempAir)
+CleanTempAir
+#12.
+printVecinfo(CleanTempAir$Ozone)
+hist(CleanTempAir$Ozone)
+printVecinfo(CleanTempAir$Wind)
+hist(CleanTempAir$Wind)
+printVecinfo(CleanTempAir$Temp)
+hist(CleanTempAir$Temp)
+```

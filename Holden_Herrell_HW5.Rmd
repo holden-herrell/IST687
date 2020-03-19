@@ -1,0 +1,59 @@
+---
+title: "Holden Herrell IST687 HW5"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+geometry: margin=2cm
+classoption: landscape
+---
+
+
+```{r, include=FALSE}
+install.packages("RSocrata", repos = "http://cran.us.r-project.org")
+install.packages("jsonlite", repos = "http://cran.us.r-project.org")
+install.packages("RCurl", repos = "http://cran.us.r-project.org")
+install.packages("sqldf", repos = "http://cran.us.r-project.org")
+library(RSocrata)
+library(jsonlite)
+library(RCurl)
+library(sqldf)
+```
+```{r}
+#Step 1
+url<-"http://opendata.maryland.gov/resource/pdvh-tf2u.json"
+df<-read.socrata(url)
+
+#Step 2
+namesOfColumns <- c("ACC_DATE","ACC_TIME","ACC_TIME_CODE","BARRACK","CASE_NUMBER","CITY_NAME",
+                    "COLLISION_WITH_1","COLLISION_WITH_2","COUNTY_CODE","COUNTY_NAME","DAY_OF_WEEK",
+                    "DIST_DIRECTION","DIST_FROM_INTERSECT","INJURY","INTERSECT_ROAD","PROP_DEST",
+                    "ROAD","VEHICLE_COUNT")
+cleandf<-function(df, namesOfColumns){
+  colnames(df)<-namesOfColumns
+  return(df)
+}
+
+df<-cleandf(df, namesOfColumns)
+
+#Step 3
+df$DAY_OF_WEEK <-gsub(" ","",df$DAY_OF_WEEK)
+SundayAccidents<-sqldf("select count(DAY_OF_WEEK) as 'Accidents', DAY_OF_WEEK as 'Day' 
+                       from df where DAY_OF_WEEK = 'SUNDAY'")
+SundayAccidents
+
+AccidentsWithInjury<-sqldf("select count(*) as 'Accidents with Injuries' from df where INJURY='YES' ")
+AccidentsWithInjury
+
+DailyInjuries<- sqldf(" select  DAY_OF_WEEK as 'Day', count(DAY_OF_WEEK) as 'Accidents' 
+                      from df where INJURY='YES' group by DAY_OF_WEEK")
+DailyInjuries
+
+#Step 4
+tapply(df$CASE_NUMBER, df$DAY_OF_WEEK=='SUNDAY',length)
+
+tapply(df$CASE_NUMBER, df$INJURY == 'YES', length)
+
+injuries<-df[which(df$INJURY=='YES'),]
+tapply(injuries$CASE_NUMBER, injuries$DAY_OF_WEEK, length)
+```

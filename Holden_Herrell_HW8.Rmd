@@ -1,0 +1,71 @@
+---
+title: "Holden Herrell IST687 HW8"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+geometry: margin=2cm
+classoption: landscape
+---
+
+
+```{r, include=FALSE}
+install.packages("curl", repos = "http://cran.us.r-project.org")
+library(curl)
+install.packages("gdata", repos = "http://cran.us.r-project.org")
+library(gdata)
+install.packages("ggplot2", repos = "http://cran.us.r-project.org")
+library(ggplot2)
+```
+```{r}
+#Step 1-2
+Data<-read.xls("http://college.cengage.com/mathematics/brase/understandable_statistics/7e/students/datasets/mlr/excel/mlr01.xls")
+colnames(Data)<-c("FawnCount","AdultPop","AnnualPrecip","WinterSeverity")
+#Step 3
+str(Data)
+```
+\newpage
+```{r}
+#Step 4
+Plot1<-ggplot(Data,aes(x=AdultPop, y=FawnCount))+geom_point()+ggtitle("Fawns vs Adult Antelope Population")
+Plot1
+```
+\newpage
+```{r}
+Plot2<-ggplot(Data,aes(x=AnnualPrecip, y=FawnCount))+geom_point()+ggtitle("Fawns vs Annual Precipitation")
+Plot2
+```
+\newpage
+```{r}
+Plot3<-ggplot(Data,aes(x=WinterSeverity, y=FawnCount))+geom_point()+ggtitle("Fawns vs Winter Severity")
+Plot3
+```
+\newpage
+```{r}
+#Step 5
+#Model 1
+m1<-lm(Data$FawnCount ~ Data$WinterSeverity, data=Data)
+summary(m1)
+```
+\newpage
+```{r}
+#Model 2
+m2<-lm(Data$FawnCount ~ Data$WinterSeverity+Data$AnnualPrecip, data=Data)
+summary(m2)
+```
+\newpage
+```{r}
+#Model 3
+m3<-lm(Data$FawnCount ~ Data$WinterSeverity+Data$AnnualPrecip+Data$AdultPop, data=Data)
+summary(m3)
+```
+\newpage
+```{r}
+#Model 3 works best because it explains ~95% of the variation in Fawn Count. 
+#In Model 1, Winter Severity is significant.
+#In Model 2, Annual Precipitation is significant.
+#In Model 3, Winter Severity, Annual Precipitation, and Adult Population were significant.
+#I would use the Adult Population to predict Fawn Count (see below).
+m4<-lm(Data$FawnCount ~ Data$AdultPop, data=Data)
+summary(m4)
+```
